@@ -1,5 +1,5 @@
 import { Image, Modal, Platform, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
-import React, { useContext, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import { widthPercentageToDP as wp, heightPercentageToDP as hp } from '../../../pixel'
 import { Colors, Fonts } from '../../../utils'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -8,36 +8,46 @@ import profileImage from '../../assets/profile/boy.png'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Octicons from 'react-native-vector-icons/Octicons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
-import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import { FilledButton, OutLinedButton } from '../../components/InputComp/Button'
 import { Routes } from '../../../services/Routes'
 import { Context } from '../../context/Mycontext'
+import { clearStorage } from '../../../services/storage'
 
 const Profile = ({ navigation, route }) => {
 
-  const { isVerified } = useContext(Context)
-  // console.log(isVerified,'===isVerified')
+  const { isVerified, setIsVerified ,user,setUser} = useContext(Context)
 
-  const [options, setOptions] = useState([
-    { name: 'Your Profile', icon: <AntDesign name='user' color={Colors.primaryBrown} size={hp(2.5)} />, },
-    // { name: 'Payment Methods', icon: <Octicons name='credit-card' color={Colors.primaryBrown} size={hp(2.5)} />, onPress: () => navigation.navigate(Routes.Policy, { from: 'PaymentMethods', prevStack: 'Settings' }) },
-    // { name: 'My Orders', icon: <MaterialCommunityIcons name='clipboard-text-outline' color={Colors.primaryBrown} size={hp(2.5)} />, onPress: () => navigation.navigate(Routes.Policy, { from: 'MyOrders' }) },
-    { name: 'Settings', icon: <Ionicons name='settings-outline' color={Colors.primaryBrown} size={hp(2.5)} />, onPress: () => navigation.navigate(Routes.Policy, { from: 'Settings' }) },
-    // { name: 'Help Center', icon: <MaterialCommunityIcons name='help-circle-outline' color={Colors.primaryBrown} size={hp(2.5)} />, onPress: () => navigation.navigate(Routes.Policy, { from: 'HelpCenter' }) },
-    // { name: 'Privacy Policy', icon: <MaterialCommunityIcons name='lock-outline' color={Colors.primaryBrown} size={hp(2.5)} />, onPress: () => navigation.navigate(Routes.Policy, { from: 'PrivacyPolicy' }) },
-    // { name: 'Invite Friends', icon: <AntDesign name='adduser' color={Colors.primaryBrown} size={hp(2.5)} />, onPress: () => navigation.navigate(Routes.Policy, { from: 'InviteFriends' }) },
-    {
-      name: isVerified == 1 ? 'Log out' : 'Log in / Register', icon: <AntDesign name={isVerified == 1 ? 'logout' : 'login'} color={Colors.primaryBrown} size={hp(2.5)} />, onPress: () => {
-        if (isVerified == 1) {
-          setLogoutVisible(!logoutVisible)
-        }
-        else{
-          navigation.navigate(Routes.Auth,{goback:true})
-        }
-      }
-    },
-  ]);
   const [logoutVisible, setLogoutVisible] = useState(false)
+
+  const handleLogOut = async () => {
+    setIsVerified(0);
+    setLogoutVisible(false);
+    setUser(null)
+    await clearStorage()
+  }
+
+  const [options, setOptions] = useState([]);
+
+  const handleProfile = () =>{
+
+  }
+
+  useEffect(() => {
+    const updatedOptions = [
+      { name: 'Your Profile', icon: <AntDesign name='user' color={Colors.primaryBrown} size={hp(2.5)} onPress={handleProfile}/> },
+      { name: 'Settings', icon: <Ionicons name='settings-outline' color={Colors.primaryBrown} size={hp(2.5)} />, onPress: () => navigation.navigate(Routes.Policy, { from: 'Settings' }) },
+      {
+        name: isVerified == 1 ? 'Log out' : 'Log in / Register', icon: <AntDesign name={isVerified == 1 ? 'logout' : 'login'} color={Colors.primaryBrown} size={hp(2.5)} />, onPress: () => {
+          if (isVerified == 1) {
+            setLogoutVisible(!logoutVisible);
+          } else {
+            navigation.navigate(Routes.Auth, { goback: true });
+          }
+        }
+      },
+    ];
+    setOptions(updatedOptions);
+  }, [isVerified]);
 
   return (
     <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white, paddingBottom: Platform?.OS == 'ios' ? hp(2) : hp(5) }}>
@@ -64,7 +74,7 @@ const Profile = ({ navigation, route }) => {
           </View>
 
           {/* Profile Name */}
-          <Text style={[styles?.userName]}>Esther Howard</Text>
+          <Text style={[styles?.userName]}>{user?.name}</Text>
 
           {/* Options */}
           <View style={{ flexDirection: 'column', justifyContent: "flex-start", alignItems: 'center', width: '100%', }}>
@@ -119,7 +129,7 @@ const Profile = ({ navigation, route }) => {
               <OutLinedButton onPress={() => setLogoutVisible(false)}
                 text={'Cancel'} style={{ width: '49%', height: hp(6), paddingVertical: hp(.2), marginBottom: 0, marginTop: 0 }} />
               <FilledButton text={'Yes, Logout'}
-                onPress={() => setLogoutVisible(false)}
+                onPress={handleLogOut}
                 btnStyle={{ width: '49%', height: hp(6), paddingVertical: hp(.2), marginTop: 0 }} />
             </View>
           </View>

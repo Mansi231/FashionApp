@@ -93,15 +93,19 @@ const Home = ({ navigation, route }) => {
   }
 
   const performSearch = async (query) => {
-
     getProducts({ name:searchValue, page: 1 })
   };
 
-  const debouncedSearch = _.debounce(performSearch, 3000); // Adjust the delay as needed.
+  const debouncedSearch = useCallback(_.debounce(performSearch, 3000), []); // Adjust the delay as needed.
 
   const handleSearch = (text) => {
     setSearchValue(text)
-    debouncedSearch();
+    if(text){
+      debouncedSearch(text);
+    }
+    else{
+      getProducts({ page: currentPage });
+    }
   }
 
   return (

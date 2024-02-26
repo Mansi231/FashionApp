@@ -8,8 +8,8 @@ import Fontisto from 'react-native-vector-icons/Fontisto'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import { Routes } from '../../../services/Routes'
 import { IMAGE_URL } from '@env';
-import AsyncStorageUtil, { KEYS } from '../../../services/AsyncStorageUtil'
 import { Context } from '../../context/Mycontext'
+import { KEYS, setItemToStorage } from '../../../services/storage'
 
 const Likes = ({ navigation, route }) => {
 
@@ -32,7 +32,7 @@ const Likes = ({ navigation, route }) => {
 
   const saveLikedProducts = async () => {
     try {
-      await AsyncStorageUtil.setItem(KEYS.wishlist, JSON.stringify(likedProducts));
+      await setItemToStorage(KEYS.wishlist,likedProducts)
     } catch (error) {
       console.log(error, ' : error for wishlist');
     }

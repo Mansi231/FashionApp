@@ -8,11 +8,13 @@ const Auth = ({ navigation, route }) => {
   const [from, setFrom] = useState(route?.params?.from || 'signup')
   let accountType = { signin: 'signin', signup: 'signup' }
 
+  // let from = 'signup'
+
   const GobackToScreen = () => {
     navigation.goBack()
   }
 
-  return (
+  return ( 
     <>
       {from == accountType?.signin ? <SignIn
         onGoBack={GobackToScreen}

@@ -1,6 +1,6 @@
 import { StyleSheet } from 'react-native'
 import React, { createContext, useEffect, useState } from 'react'
-import AsyncStorageUtil, { KEYS } from '../../services/AsyncStorageUtil';
+import { KEYS, getItemFromStorage } from '../../services/storage';
 
 export const Context = createContext();
 
@@ -9,6 +9,7 @@ const Mycontext = ({ children }) => {
     const [likedProducts, setLikedProducts] = useState([]);
     const [cartList, setCartList] = useState([]);
     const [isVerified, setIsVerified] = useState(0);
+    const [user,setUser] = useState(null)
 
     const [selectedFilter, setSelectedFilter] = useState({
         gender: 'All', brand: 'All', pricingRange: '', sortBy: 'Popular', rating: '4.5 and above'
@@ -19,10 +20,11 @@ const Mycontext = ({ children }) => {
 
     const getLikedProducts = async () => {
         try {
-            let wishlist = await AsyncStorageUtil.getItem(KEYS.wishlist);
-            let list = JSON.parse(wishlist);
-            if (list) {
-                setLikedProducts(list);
+            let wishlist = await getItemFromStorage(KEYS.wishlist)
+            let loggedInUser = await getItemFromStorage(KEYS.user)
+            if(loggedInUser) setUser(loggedInUser)
+            if (wishlist) {
+                setLikedProducts(wishlist);
             }
         } catch (error) {
             console.log(error, ' : error getting wishlist - async storage');
@@ -30,7 +32,7 @@ const Mycontext = ({ children }) => {
     };
 
     return (
-        <Context.Provider value={{ likedProducts, setLikedProducts, cartList, setCartList, selectedFilter, setSelectedFilter, isVerified, setIsVerified }}>{children}</Context.Provider>
+        <Context.Provider value={{ likedProducts, setLikedProducts, cartList, setCartList, selectedFilter, setSelectedFilter, isVerified, setIsVerified ,user,setUser}}>{children}</Context.Provider>
     )
 }
 

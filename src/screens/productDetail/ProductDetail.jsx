@@ -16,7 +16,7 @@ import Swiper from 'react-native-swiper'
 import { Context } from '../../context/Mycontext'
 import { Routes } from '../../../services/Routes'
 import TextInput from '../../components/InputComp/TextInputCommon'
-import AsyncStorageUtil, { KEYS } from '../../../services/AsyncStorageUtil'
+import { KEYS, setItemToStorage } from '../../../services/storage'
 
 const ProductDetail = ({ navigation, route }) => {
     let { params: { product } } = route
@@ -124,8 +124,7 @@ const ProductDetail = ({ navigation, route }) => {
 
     const saveLikedProducts = async () => {
         try {
-            
-            await AsyncStorageUtil.setItem(KEYS.wishlist, JSON.stringify(likedProducts));
+            await setItemToStorage(KEYS.wishlist,likedProducts)
         } catch (error) {
             console.log(error, ' : error for wishlist');
         }

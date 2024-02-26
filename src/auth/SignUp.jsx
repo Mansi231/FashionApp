@@ -1,3 +1,4 @@
+import Toast from 'react-native-toast-message';
 import { Image, Platform, ScrollView, StatusBar, Text, TouchableOpacity, View } from 'react-native'
 import React, { useState } from 'react'
 import { Colors, Fonts } from '../../utils'
@@ -6,35 +7,32 @@ import { SafeAreaView } from 'react-native-safe-area-context'
 import TextInput from '../components/InputComp/TextInputCommon'
 import { FilledButton } from '../components/InputComp/Button'
 import Feather from 'react-native-vector-icons/Feather';
-import Ionicons from 'react-native-vector-icons/Ionicons';
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import GoogleLogo from '../assets/auth/googleLogo.png'
 import { BackArrow, Header } from '../components/CommonComp'
 import { Routes } from '../../services/Routes'
 import { Formik } from 'formik'
 import * as yup from 'yup';
 import { styles } from './authStyle'
 import { registerApi } from '../../services/redux/actions/AuthAction'
-import Toast from 'react-native-simple-toast';
 
 const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? hp(6) : 0;
 
-const SignUp = ({ navigation, from, setFrom, goback ,onGoBack}) => {
+const SignUp = ({ navigation, from, setFrom, goback, onGoBack }) => {
 
     let accountType = { signin: 'signin', signup: 'signup' }
 
     const [showPassword, setShowPassword] = useState(false);
     const [agree, setAgree] = useState(true);
     const [loading, setLoading] = useState(false)
+    const [scrollOffset, setScrollOffset] = useState(0);
 
     const handleNavigation = () => {
         setFrom(accountType.signin)
     }
 
     const handleSignUp = async (values) => {
-        // navigation.navigate(Routes.VerifyCode,{email:values.email})
         try {
+            setLoading(true)
             var formData = new FormData();
             formData.append('name', values.name);
             formData.append('email', values.email);
@@ -44,14 +42,33 @@ const SignUp = ({ navigation, from, setFrom, goback ,onGoBack}) => {
             const response = await registerApi(formData);
 
             if (response.status) {
+            
                 navigation.navigate(Routes.VerifyCode, { email: values.email })
 
             } else {
-                Toast.showWithGravity(err?.message?.email[0] || err?.message?.password[0] || err?.message?.name[0], Toast.LONG, Toast.TOP, { backgroundColor: '#ec0024', textColor: Colors.white });
+                Toast.show({
+                    type: 'error',
+                    text1: err?.message?.email[0] || err?.message?.password[0] || err?.message?.name[0],
+                    visibilityTime: 3000,
+                    swipeable: true,
+                    text1Style: { fontFamily: Fonts.PoppinsMedium, fontSize: hp(1.3), color: Colors.black, letterSpacing: wp(.1) },
+                    topOffset: scrollOffset,
+                });
             }
         } catch (err) {
             console.log('Get Error::', err);
-            Toast.showWithGravity(err?.message?.email[0] || err?.message?.password[0] || err?.message?.name[0], Toast.LONG, Toast.TOP, { backgroundColor: '#ec0024', textColor: Colors.white });
+            Toast.show({
+                type: 'error',
+                text1: err?.message?.email[0] || err?.message?.password[0] || err?.message?.name[0],
+                visibilityTime: 3000,
+                swipeable: true,
+                text1Style: { fontFamily: Fonts.PoppinsMedium, fontSize: hp(1.3), color: Colors.black, letterSpacing: wp(.1) },
+                topOffset: scrollOffset,
+            });
+
+        }
+        finally{
+            setLoading(false)
         }
     }
 
@@ -68,11 +85,13 @@ const SignUp = ({ navigation, from, setFrom, goback ,onGoBack}) => {
                 barStyle="dark-content"
             />
             {
-                goback ? <Header heading={'Create Account'} onPress={ onGoBack} /> : <>
-                    <BackArrow hidden={true}/>
+                goback ? <Header heading={'Create Account'} onPress={onGoBack} /> : <>
+                    <BackArrow hidden={true} />
                     <Text style={styles?.heading}>{'Create Account'}</Text>
                 </>
             }
+            <Toast position='top' />
+
             {/* <Text style={styles?.heading}>{'Create Account'}</Text> */}
             <Text style={styles?.welcomeText}>{`fill your information below or register with 
                 your social account.`}</Text>
@@ -94,6 +113,9 @@ const SignUp = ({ navigation, from, setFrom, goback ,onGoBack}) => {
                         scrollEnabled={true}
                         contentContainerStyle={{ flexGrow: 1, paddingBottom: hp(15) }}
                         style={{ width: '100%' }}
+                        onScroll={(event) => {
+                            setScrollOffset(event.nativeEvent.contentOffset.y);
+                        }}
                     >
                         <View style={styles?.inputContainer}>
                             <View style={styles?.inputBox}>

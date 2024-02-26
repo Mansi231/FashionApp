@@ -1,74 +1,86 @@
-import { Image, PermissionsAndroid, Platform, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import Toast from 'react-native-toast-message';
+import { PermissionsAndroid, Platform, ScrollView, StatusBar, StyleSheet, Text, TouchableOpacity, View } from 'react-native'
 import React, { useContext, useEffect, useState } from 'react'
 import { Colors, Fonts } from '../../utils'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from '../../pixel'
-import { SafeAreaView } from 'react-native-safe-area-context'
 import TextInput from '../components/InputComp/TextInputCommon'
 import { FilledButton } from '../components/InputComp/Button'
 import Feather from 'react-native-vector-icons/Feather';
-import Ionicons from 'react-native-vector-icons/Ionicons';
-import EvilIcons from 'react-native-vector-icons/EvilIcons';
-import GoogleLogo from '../assets/auth/googleLogo.png'
 import { BackArrow, Header } from '../components/CommonComp'
 import { Routes } from '../../services/Routes'
 import { Formik } from 'formik'
 import * as yup from 'yup';
 import { styles } from './authStyle'
 import { loginApi } from '../../services/redux/actions/AuthAction'
-import Toast from 'react-native-simple-toast';
-import AsyncStorageUtil, { KEYS } from '../../services/AsyncStorageUtil'
 import { Context } from '../context/Mycontext'
+import { KEYS, setItemToStorage } from '../../services/storage';
 
 const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? hp(6) : 0;
 
-const SignIn = ({ navigation, from, setFrom, goback ,onGoBack}) => {
+const SignIn = ({ navigation, from, setFrom, goback, onGoBack }) => {
 
     let accountType = { signin: 'signin', signup: 'signup' }
-    const { isVerified, setIsVerified } = useContext(Context)
+    const { isVerified, setIsVerified,setUser } = useContext(Context)
 
     const [showPassword, setShowPassword] = useState(false);
     const [loading, setLoading] = useState(false)
+    const [scrollOffset, setScrollOffset] = useState(0);
 
     const handleNavigation = () => {
         setFrom(accountType.signup)
     }
 
-    const handleSignIn = async (values,resetForm) => {
+    const handleSignIn = async (values, resetForm) => {
         try {
             setLoading(true)
             const response = await loginApi({ email: values.email, password: values.password });
 
             if (response?.data?.access_token || response?.status || response?.data?.status) {
-                setLoading(false)
                 if (response?.data?.is_verified == 1 || response.is_verified == 1) {
-                    await AsyncStorageUtil.setItem(KEYS.user, JSON.stringify(response?.data));
-                    await AsyncStorageUtil.setItem(KEYS.access_token, JSON.stringify(response.data.access_token || response.access_token));
-                    await AsyncStorageUtil.setItem(KEYS.is_verified, '1');
+                    await setItemToStorage(KEYS.user, response?.data)
+                    await setItemToStorage(KEYS.access_token, response.data.access_token || response.access_token)
+                    await setItemToStorage(KEYS.is_verified, 1)
                     setIsVerified(1)
+                    setUser(response?.data)
+                    resetForm();
                     navigation.reset({
                         index: 0,
                         routes: [{ name: Routes.BottomTab }],
                     });
-                    resetForm();
+
                 }
                 else {
-                    setLoading(false);
-                    resetForm();
+                    resetForm()
                     navigation.navigate(Routes.VerifyCode, { email: values.email })
                 }
-
             } else {
-                setLoading(false);
-                Toast.showWithGravity('Oops ! something went wrong .', Toast.LONG, Toast.TOP, { backgroundColor: '#ec0024', textColor: Colors.white });
+                Toast.show({
+                    type: 'error',
+                    text1: `Oops ! something went wrong .`,
+                    visibilityTime: 3000,
+                    swipeable: true,
+                    text1Style: { fontFamily: Fonts.PoppinsMedium, fontSize: hp(1.3), color: Colors.black, letterSpacing: wp(.1) },
+                    topOffset: scrollOffset,
+                });
             }
         } catch (err) {
-            console.log('signin Error::', err);
             if (!err.status && err?.message && err?.is_verified == 0) {
+                resetForm()
                 navigation.navigate(Routes.VerifyCode, { email: values.email })
             }
             else {
-                Toast.showWithGravity(err?.message, Toast.LONG, Toast.TOP, { backgroundColor: '#ec0024', textColor: Colors.white });
+                Toast.show({
+                    type: 'error',
+                    text1: err?.message,
+                    visibilityTime: 3000,
+                    swipeable: true,
+                    text1Style: { fontFamily: Fonts.PoppinsMedium, fontSize: hp(1.3), color: Colors.black, letterSpacing: wp(.1) },
+                    topOffset: scrollOffset,
+                });
             }
+        } finally {
+            setLoading(false)
+
         }
     }
 
@@ -103,24 +115,29 @@ const SignIn = ({ navigation, from, setFrom, goback ,onGoBack}) => {
             />
             {
                 goback ? <Header heading={'Sign In'} onPress={() => onGoBack()} /> : <>
-                    <BackArrow hidden={true}/>
+                    <BackArrow hidden={true} />
                     <Text style={styles?.heading}>{'Sign In'}</Text>
                 </>
             }
+            <Toast position='top' />
+
             {/* <Text style={styles?.heading}>{'Sign In'}</Text> */}
             <Text style={styles?.welcomeText}>{`Hi! Wecome back , you've been missed`}</Text>
             <Formik
                 initialValues={{ email: '', password: '' }}
                 onSubmit={(values, { resetForm }) => {
-                    handleSignIn(values,resetForm)
+                    handleSignIn(values, resetForm)
                 }}
                 validationSchema={yup.object().shape({
                     password: yup.string().required('Password is required.'),
                     email: yup.string().required('Email is required').email('Invalida email address.'),
                 })}
             >
-                {({ handleChange, handleSubmit, values, setFieldValue, errors, touched}) => (
+                {({ handleChange, handleSubmit, values, setFieldValue, errors, touched }) => (
                     <ScrollView
+                        onScroll={(event) => {
+                            setScrollOffset(event.nativeEvent.contentOffset.y);
+                        }}
                         showsVerticalScrollIndicator={false}
                         scrollEnabled={true}
                         contentContainerStyle={{ flexGrow: 1, paddingBottom: hp(15) }}

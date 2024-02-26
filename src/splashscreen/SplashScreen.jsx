@@ -5,8 +5,8 @@ import { Colors } from '../../utils'
 import logo from '../assets/logo.png'
 import { Routes } from '../../services/Routes'
 import { useFocusEffect } from '@react-navigation/native'
-import AsyncStorageUtil, { KEYS } from '../../services/AsyncStorageUtil'
 import { Context } from '../context/Mycontext'
+import { KEYS, getItemFromStorage } from '../../services/storage'
 
 const SplashScreen = ({ navigation }) => {
 
@@ -18,7 +18,7 @@ const SplashScreen = ({ navigation }) => {
 
     const getIsUserLoggedIn = async () => {
         try {
-            const is_verified = await AsyncStorageUtil.getItem(KEYS.is_verified);
+            const is_verified = await getItemFromStorage(KEYS.is_verified)
             if (is_verified == 1) {
                 setIsVerified(is_verified)
                 setTimeout(() => { navigation.replace(Routes?.BottomTab) }, 1500)

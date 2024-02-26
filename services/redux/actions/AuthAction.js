@@ -2,8 +2,20 @@ import API from "../../AxiosConfig";
 export const LOGIN = LOGIN
 
 export const registerApi = async (RequestData) => {
-  
-    return new Promise((resolve, reject) => { API.post(`/register`, RequestData).then((res) => resolve(res.data)).catch((error) => reject(error.response.data)) })
+
+    return new Promise((resolve, reject) => {
+        API.post(`/register`, RequestData).then((res) => {
+            return resolve(res.data)
+        }
+        ).catch((error) => {
+            if (error?.response) {
+                return reject(error?.response?.data || error.message);
+            } else {
+                return reject(error?.message)
+            }
+        }
+        )
+    })
 };
 
 export const verifyCodeApi = async (obj) => {
@@ -16,6 +28,7 @@ export const verifyCodeApi = async (obj) => {
 
 export const resendCodeApi = async (email) => {
     return new Promise((resolve, reject) => {
+        ost
         API.get(`/resend-code?email=${email}`)
             .then((res) => resolve(res.data))
             .catch((error) => reject(error.response.data))
@@ -26,11 +39,35 @@ export const loginApi = async (obj) => {
     return new Promise((resolve, reject) => {
         API.get(`/login?email=${obj?.email}&password=${obj?.password}`)
             .then((res) => {
-                console.log(res, '----inn'); return resolve(res.data)
+                return resolve(res?.data)
             })
             .catch((error) => {
-                console.log(reject(error.response.data), '-err'); return reject(error)
+                // console.log(error,':: error in sign in ::')
+                if (error.response) {
+                    return reject(error?.response?.data || error.message);
+                } else {
+                    return reject(error?.message)
+                }
+
             })
     })
 };
 
+export const changePassword = async (data) =>{
+    return new Promise((resolve, reject) => {
+        API.post(`/buyer/changepassword`,data)
+            .then((res) => {
+                return resolve(res?.data) 
+            })
+            .catch((error) => {
+                // console.log(error,':: error in sign in ::')
+                if (error.response) {
+                    return reject(error?.response?.data || error.message);
+                } else {
+                    return reject(error?.message)
+                }
+
+            })
+    })
+
+}

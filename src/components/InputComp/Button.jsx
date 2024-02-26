@@ -5,7 +5,7 @@ import { heightPercentageToDP as hp, widthPercentageToDP as wp } from '../../../
 
 const FilledButton = React.memo(({loading, text, onPress, btnStyle, textStyle }) => {
     return (
-        <TouchableOpacity style={[styles?.filledBtn, btnStyle]} onPress={onPress}>
+        <TouchableOpacity disabled={loading || false} style={[styles?.filledBtn, btnStyle,loading && {backgroundColor:Colors.Timberwolf}]} onPress={onPress}>
             {loading && <ActivityIndicator color={Colors.white} />}
             <Text style={[styles?.btnText, textStyle]}>{text}</Text>
         </TouchableOpacity>

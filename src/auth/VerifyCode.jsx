@@ -1,3 +1,4 @@
+import Toast from 'react-native-toast-message';
 import { Keyboard, StatusBar, StyleSheet, Text, TextInput, TouchableOpacity, View } from 'react-native'
 import React, { useContext, useRef, useState } from 'react'
 import { SafeAreaView } from 'react-native-safe-area-context'
@@ -9,9 +10,8 @@ import { Formik } from 'formik'
 import * as yup from 'yup';
 import { Routes } from '../../services/Routes'
 import { registerApi, resendCodeApi, verifyCodeApi } from '../../services/redux/actions/AuthAction'
-import Toast from 'react-native-simple-toast';
-import AsyncStorageUtil, { KEYS } from '../../services/AsyncStorageUtil'
 import { Context } from '../context/Mycontext'
+import { KEYS, setItemToStorage } from '../../services/storage'
 
 const VerifyCode = ({ navigation, route, length = 4 }) => {
 
@@ -48,12 +48,14 @@ const VerifyCode = ({ navigation, route, length = 4 }) => {
         }
     };
 
-    const handleVerififcation = async (values) => {
+    const handleVerififcation = async (values,resetForm) => {
         try {
-
+            setLoading(true)
             const response = await verifyCodeApi({ email: email, verification_code: values.otp.join('') });
+
+            console.log(response,':: verify resposne ::')
             if (response.status) {
-                await AsyncStorageUtil.setItem(KEYS.is_verified, '1');
+                await setItemToStorage(KEYS.is_verified,1)
                 setIsVerified(1);
                 // navigation.reset({
                 //     index: 0,
@@ -64,23 +66,49 @@ const VerifyCode = ({ navigation, route, length = 4 }) => {
 
             }
         } catch (err) {
+
             console.log('Get Error::', err);
+        }
+        finally{
+            resetForm()
+            setLoading(false)
         }
     }
 
     const handleResendCode = async () => {
-        Toast.showWithGravity(`verification code has been sent to ${email}`, Toast.LONG, Toast.TOP, { backgroundColor: '#ec0024', textColor: Colors.white });
+
         try {
             const response = await resendCodeApi(email);
             console.log('----resend code response---', response)
             if (response.status) {
-                Toast.showWithGravity(`verification code has been sent to ${email}`, Toast.LONG, Toast.TOP, { backgroundColor: '#ec0024', textColor: Colors.white });
+                Toast.show({
+                    type: 'success',
+                    text1: `verification code has been sent to ${email}`,
+                    visibilityTime: 3000,
+                    swipeable: true,
+                    text1Style: { fontFamily: Fonts.PoppinsMedium, fontSize: hp(1.3), color: Colors.black, letterSpacing: wp(.1) },
+                    topOffset: scrollOffset,
+                });
 
             } else {
-                Toast.showWithGravity('Oops ! something went wrong.', Toast.LONG, Toast.TOP, { backgroundColor: '#ec0024', textColor: Colors.white });
+                Toast.show({
+                    type: 'error',
+                    text1: `Oops ! something went wrong.`,
+                    visibilityTime: 3000,
+                    swipeable: true,
+                    text1Style: { fontFamily: Fonts.PoppinsMedium, fontSize: hp(1.3), color: Colors.black, letterSpacing: wp(.1) },
+                    topOffset: scrollOffset,
+                });
             }
         } catch (err) {
-            Toast.showWithGravity(err?.message, Toast.LONG, Toast.TOP, { backgroundColor: '#ec0024', textColor: Colors.white });
+            Toast.show({
+                type: 'error',
+                text1: err?.message,
+                visibilityTime: 3000,
+                swipeable: true,
+                text1Style: { fontFamily: Fonts.PoppinsMedium, fontSize: hp(1.3), color: Colors.black, letterSpacing: wp(.1) },
+                topOffset: scrollOffset,
+            });
         }
     }
 
@@ -92,6 +120,7 @@ const VerifyCode = ({ navigation, route, length = 4 }) => {
                     barStyle="dark-content"
                 />
                 <BackArrow onPress={() => navigation.goBack()} />
+                <Toast position='top' />
                 <Text style={styles?.heading}>Verify Code</Text>
                 <Text style={styles?.welcomeText}>
                     Please enter code we just sent to email {'\n'}
@@ -99,10 +128,10 @@ const VerifyCode = ({ navigation, route, length = 4 }) => {
                 </Text>
                 <Formik
                     initialValues={{ otp: Array(length).fill('') }}
-                    onSubmit={values => {
+                    onSubmit={(values,{resetForm}) => {
                         console.log(values);
                         // handleSignUp(values)
-                        handleVerififcation(values)
+                        handleVerififcation(values,resetForm)
                     }}
                     validationSchema={yup.object().shape({
                         otp: yup

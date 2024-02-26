@@ -11,8 +11,8 @@ import { getFilterProducts } from '../../../services/redux/actions/HomeAction'
 import noImage from '../../assets/home/noImage.webp'
 import Loader from '../../loader/Loader'
 import { Routes } from '../../../services/Routes'
-import AsyncStorageUtil, { KEYS } from '../../../services/AsyncStorageUtil'
 import { Context } from '../../context/Mycontext'
+import { KEYS, setItemToStorage } from '../../../services/storage'
 
 const CategoryProducts = ({ navigation, route }) => {
 
@@ -109,7 +109,7 @@ const CategoryProducts = ({ navigation, route }) => {
 
     const saveLikedProducts = async () => {
         try {
-            await AsyncStorageUtil.setItem(KEYS.wishlist, JSON.stringify(likedProducts));
+            await setItemToStorage(KEYS.wishlist,likedProducts)
         } catch (error) {
             console.log(error, ' : error for wishlist');
         }
