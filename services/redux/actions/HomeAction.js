@@ -2,7 +2,10 @@ import API from "../../AxiosConfig";
 
 export const getCategories = () => API.get('/getCategory').then(response => response.data.data).catch(error => error);
 
-export const getFilterProducts = (params) => API.get(`/getProductfilter`, { params }).then(response => response.data.data).catch(error => error);
+export const getFilterProducts = (params) => API.get(`/getProductfilter`, { params }).then(response => response.data.data).catch(error =>{
+    console.log(error?.message,':: error ::');
+    return error
+    });
 
 export const getShopDetail = (seller_id) => API.get(`/getShopDetails/${seller_id}`).then(response => response.data.data).catch(error => error.response);
 

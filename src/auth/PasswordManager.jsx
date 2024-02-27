@@ -63,17 +63,8 @@ const PasswordManager = ({ navigation, route }) => {
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white, }}>
-            <View style={{
-                width: "100%",
-                height: STATUS_BAR_HEIGHT,
-                backgroundColor: Colors.white
-            }} />
-            <StatusBar
-                backgroundColor={Colors.white}
-                barStyle="dark-content"
-            />
             <View style={[styles?.container]}>
-                <Header heading={'Settings'} boxStyle={[{ paddingBottom: hp(2.7), }]} onPress={() => navigation.goBack()} />
+                <Header heading={'Password Manager'} boxStyle={[{ paddingBottom: hp(2.7), }]} onPress={() => navigation.goBack()} />
                 <Toast position='top' />
                 <Formik
                     initialValues={{ currentpassword: '', newpassword: '', confirmpassword: "" }}

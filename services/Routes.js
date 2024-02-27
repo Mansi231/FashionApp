@@ -4,6 +4,7 @@ export const Routes = {
     Auth:'Auth',
     VerifyCode:'VerifyCode',
     PasswordManager:'PasswordManager',
+    EditProfile:'EditProfile',
     Location:'Location',
     ManualLocation:'ManualLocation',
     BottomTab:'BottomTab',

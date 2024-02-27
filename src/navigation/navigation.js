@@ -39,6 +39,7 @@ import Search from '../screens/serach/Search';
 import Auth from '../auth/Auth';
 import AllCategory from '../screens/category/AllCategory';
 import CategoryProducts from '../screens/category/CategoryProducts';
+import EditProfile from '../screens/profile/EditProfile';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -139,28 +140,29 @@ const Navigation = () => {
     const navigationRef = useRef();
 
     const [screens, setScreens] = useState([
-        { name: Routes?.SplashScreen, component: SplashScreen },
-        { name: Routes?.GetStarted, component: GetStarted },
-        { name: Routes?.BottomTab, component: BottomTab },
-        { name: Routes?.Auth, component: Auth },
-        { name: Routes?.VerifyCode, component: VerifyCode },
-        { name: Routes?.Location, component: Location },
-        { name: Routes?.ManualLocation, component: ManualLocation },
-        { name: Routes?.ProductDetail, component: ProductDetail },
-        { name: Routes?.MyCart, component: MyCart },
-        { name: Routes?.LeaveReview, component: LeaveReview },
-        { name: Routes?.TrackOrder, component: TrackOrder },
-        { name: Routes?.Checkout, component: Checkout },
-        { name: Routes?.ShippingType, component: ShippingType },
-        { name: Routes?.ShippingAddress, component: ShippingAddress },
-        { name: Routes?.PaymentMethods, component: PaymentMethods },
-        { name: Routes?.AddCard, component: AddCard },
-        { name: Routes?.PaymentSuccess, component: PaymentSuccess },
-        { name: Routes?.Cuopon, component: Cuopon },
-        { name: Routes?.Notification, component: Notification },
-        { name: Routes?.Filter, component: Filter },
-        { name: Routes?.Policy, component: Policy },
-        { name: Routes?.PasswordManager, component: PasswordManager },
+        // { name: Routes?.SplashScreen, component: SplashScreen },
+        // { name: Routes?.GetStarted, component: GetStarted },
+        // { name: Routes?.BottomTab, component: BottomTab },
+        // { name: Routes?.Auth, component: Auth },
+        // { name: Routes?.VerifyCode, component: VerifyCode },
+        // { name: Routes?.Location, component: Location },
+        // { name: Routes?.ManualLocation, component: ManualLocation },
+        // { name: Routes?.ProductDetail, component: ProductDetail },
+        // { name: Routes?.MyCart, component: MyCart },
+        // { name: Routes?.LeaveReview, component: LeaveReview },
+        // { name: Routes?.TrackOrder, component: TrackOrder },
+        // { name: Routes?.Checkout, component: Checkout },
+        // { name: Routes?.ShippingType, component: ShippingType },
+        // { name: Routes?.ShippingAddress, component: ShippingAddress },
+        // { name: Routes?.PaymentMethods, component: PaymentMethods },
+        // { name: Routes?.AddCard, component: AddCard },
+        // { name: Routes?.PaymentSuccess, component: PaymentSuccess },
+        // { name: Routes?.Cuopon, component: Cuopon },
+        // { name: Routes?.Notification, component: Notification },
+        // { name: Routes?.Filter, component: Filter },
+        // { name: Routes?.Policy, component: Policy },
+        // { name: Routes?.PasswordManager, component: PasswordManager },
+        { name: Routes?.EditProfile, component: EditProfile},
         { name: Routes?.Search, component: Search },
         { name: Routes?.AllCategory, component: AllCategory },
         { name: Routes?.CategoryProducts, component: CategoryProducts },

@@ -13,9 +13,9 @@ import { Routes } from '../../../services/Routes'
 import { Context } from '../../context/Mycontext'
 import { clearStorage } from '../../../services/storage'
 
-const Profile = ({ navigation,route }) => {
+const Profile = ({ navigation, route }) => {
 
-  const { isVerified, setIsVerified ,user,setUser} = useContext(Context)
+  const { isVerified, setIsVerified, user, setUser } = useContext(Context)
 
   const [logoutVisible, setLogoutVisible] = useState(false)
 
@@ -28,13 +28,19 @@ const Profile = ({ navigation,route }) => {
 
   const [options, setOptions] = useState([]);
 
-  const handleProfile = () =>{
-
+  const handleProfile = () => {
+    navigation.navigate(Routes.Auth, { goback: true });
+    return
+    if (isVerified == 1) {
+      navigation.navigate(Routes.EditProfile)
+    } else {
+      navigation.navigate(Routes.Auth, { goback: true });
+    }
   }
 
   useEffect(() => {
     const updatedOptions = [
-      { name: 'Your Profile', icon: <AntDesign name='user' color={Colors.primaryBrown} size={hp(2.5)} onPress={handleProfile}/> },
+      { name: 'Your Profile', icon: <AntDesign name='user' color={Colors.primaryBrown} size={hp(2.5)} />, onPress: handleProfile },
       { name: 'Settings', icon: <Ionicons name='settings-outline' color={Colors.primaryBrown} size={hp(2.5)} />, onPress: () => navigation.navigate(Routes.Policy, { from: 'Settings' }) },
       {
         name: isVerified == 1 ? 'Log out' : 'Log in / Register', icon: <AntDesign name={isVerified == 1 ? 'logout' : 'login'} color={Colors.primaryBrown} size={hp(2.5)} />, onPress: () => {
