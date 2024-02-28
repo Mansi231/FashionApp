@@ -9,6 +9,7 @@ import Octicons from 'react-native-vector-icons/Octicons'
 import Ionicons from 'react-native-vector-icons/Ionicons'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from '../../../pixel'
 import { Routes } from '../../../services/Routes'
+import { appStyles } from '../../../App'
 
 const Settings = ({ navigation }) => {
 
@@ -18,7 +19,7 @@ const Settings = ({ navigation }) => {
         { name: 'Delete Account', icon: <Octicons name='credit-card' color={Colors.primaryBrown} size={hp(2.5)} />, },
     ])
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white, }}>
+        <SafeAreaView style={appStyles.safeAreaView}>
             <View style={[styles?.container]}>
                 <Header heading={'Settings'} boxStyle={[{ paddingBottom: hp(2.7), }]} onPress={() => navigation.goBack()} />
                 <View style={{ flexDirection: 'column', justifyContent: "flex-start", alignItems: 'center', width: '100%' }}>

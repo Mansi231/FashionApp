@@ -8,6 +8,7 @@ import { FilledButton } from '../../components/InputComp/Button'
 import FontAwesome from 'react-native-vector-icons/FontAwesome'
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons'
 import { Context } from '../../context/Mycontext'
+import { appStyles } from '../../../App'
 
 const Filter = ({ navigation, route }) => {
 
@@ -34,7 +35,7 @@ const Filter = ({ navigation, route }) => {
     ])
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white, }}>
+        <SafeAreaView style={appStyles.safeAreaView}>
             <View style={[styles?.container, styles?.paddingX]}>
                 <StatusBar backgroundColor={Colors.white} />
 

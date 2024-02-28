@@ -7,6 +7,7 @@ import { Header } from '../../components/CommonComp'
 import MaterialCommunityIcons from 'react-native-vector-icons/MaterialCommunityIcons'
 import AntDesign from 'react-native-vector-icons/AntDesign'
 import Ionicons from 'react-native-vector-icons/Ionicons'
+import { appStyles } from '../../../App'
 
 const Notification = ({navigation,route}) => {
 
@@ -46,7 +47,7 @@ const Notification = ({navigation,route}) => {
   }
   return (
 
-    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white, }}>
+    <SafeAreaView style={appStyles.safeAreaView}>
       <View style={[styles?.container]}>
 
         {/* header */}

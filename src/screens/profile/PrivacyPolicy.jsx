@@ -5,12 +5,13 @@ import { Colors, Fonts } from '../../../utils'
 import { heightPercentageToDP as hp, widthPercentageToDP as wp } from '../../../pixel'
 import { Header } from '../../components/CommonComp'
 import { styles } from './Policy'
+import { appStyles } from '../../../App'
 
 const PrivacyPolicy = ({ navigation, route }) => {
 
     let fromRoutes = { InviteFriends: 'InviteFriends', PrivacyPolicy: "PrivacyPolicy" }
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white, }}>
+        <SafeAreaView style={appStyles.safeAreaView}>
             <View style={[styles?.container]}>
                 <Header heading={'Privacy Policy'} boxStyle={[{ paddingBottom: hp(2.7), }]} onPress={() => navigation.goBack()} />
                 <ScrollView

@@ -2,8 +2,6 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import axios from 'axios';
 import { BASE_URL } from '@env';
 
-console.log(BASE_URL,':: BASE_URL ::');
-
 export const setNavigationRef = (ref) => {
   navigationRef = ref;
 };

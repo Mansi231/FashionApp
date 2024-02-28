@@ -7,6 +7,7 @@ import { Header } from '../../components/CommonComp'
 import { styles } from './Policy'
 import profileImage from '../../assets/profile/boy.png'
 import { FilledButton } from '../../components/InputComp/Button'
+import { appStyles } from '../../../App'
 
 const InviteFriends = ({ navigation, route }) => {
 
@@ -27,7 +28,7 @@ const InviteFriends = ({ navigation, route }) => {
         { image: profileImage, name: 'Carla Schoen', point: '207.555.0119' },
     ])
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white, }}>
+        <SafeAreaView style={appStyles.safeAreaView}>
             <View style={[styles?.container]}>
                 <Header heading={'Invite Friends'} boxStyle={[{ paddingBottom: hp(2.7), }]} onPress={() => navigation.goBack()} />
                 <ScrollView

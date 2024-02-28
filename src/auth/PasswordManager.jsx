@@ -11,6 +11,7 @@ import { FilledButton } from '../components/InputComp/Button'
 import { Formik } from 'formik'
 import * as yup from 'yup';
 import { changePassword } from '../../services/redux/actions/AuthAction'
+import { appStyles } from '../../App';
 
 const STATUS_BAR_HEIGHT = Platform.OS === 'ios' ? hp(6) : 0;
 
@@ -62,7 +63,7 @@ const PasswordManager = ({ navigation, route }) => {
     }
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white, }}>
+        <SafeAreaView style={appStyles.safeAreaView}>
             <View style={[styles?.container]}>
                 <Header heading={'Password Manager'} boxStyle={[{ paddingBottom: hp(2.7), }]} onPress={() => navigation.goBack()} />
                 <Toast position='top' />

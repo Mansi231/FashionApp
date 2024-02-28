@@ -9,6 +9,7 @@ import { heightPercentageToDP as hp, widthPercentageToDP as wp } from '../../../
 import { Header } from '../../components/CommonComp'
 import ContactUs from './ContactUs'
 import FAQ from './FAQ'
+import { appStyles } from '../../../App'
 
 const HelpCenter = ({ navigation }) => {
 
@@ -49,7 +50,7 @@ const HelpCenter = ({ navigation }) => {
     }
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white, }}>
+        <SafeAreaView style={appStyles.safeAreaView}>
             <View style={[styles?.container, { paddingHorizontal: 0 }]}>
 
                 {/* Header */}

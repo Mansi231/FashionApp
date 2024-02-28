@@ -12,6 +12,7 @@ import { FilledButton, OutLinedButton } from '../../components/InputComp/Button'
 import { Routes } from '../../../services/Routes'
 import { Context } from '../../context/Mycontext'
 import { clearStorage } from '../../../services/storage'
+import { appStyles } from '../../../App'
 
 const Profile = ({ navigation, route }) => {
 
@@ -56,7 +57,7 @@ const Profile = ({ navigation, route }) => {
   }, [isVerified]);
 
   return (
-    <SafeAreaView style={{ flex: 1, backgroundColor: Colors.white, paddingBottom: Platform?.OS == 'ios' ? hp(2) : hp(5) }}>
+    <SafeAreaView style={appStyles.safeAreaView}>
       <View style={[styles?.container]}>
         <StatusBar
           backgroundColor={Colors.white}
