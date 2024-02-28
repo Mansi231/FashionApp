@@ -13,12 +13,15 @@ import { Routes } from '../../../services/Routes'
 import { Context } from '../../context/Mycontext'
 import { clearStorage } from '../../../services/storage'
 import { appStyles } from '../../../App'
+import FontAwesome6 from 'react-native-vector-icons/FontAwesome6'
+import ImagePicker from 'react-native-image-crop-picker';
 
 const Profile = ({ navigation, route }) => {
 
   const { isVerified, setIsVerified, user, setUser } = useContext(Context)
 
   const [logoutVisible, setLogoutVisible] = useState(false)
+  const [userImage, setUserImage] = useState(null)
 
   const handleLogOut = async () => {
     setIsVerified(0);
@@ -56,6 +59,54 @@ const Profile = ({ navigation, route }) => {
     setOptions(updatedOptions);
   }, [isVerified]);
 
+  const handleSelectImage = () => {
+    ImagePicker.openPicker({
+      multiple: false,
+      width: 800,
+      height: 800,
+      cropping: false,
+      maxFiles: 6,
+      mediaType: "photo",
+      compressImageMaxWidth: 800,
+      compressImageMaxHeight: 800,
+      compressImageQuality: Platform.OS == 'android' ? 0.8 : 1
+    }).then(async image => {
+
+      const croppedImage = await ImagePicker.openCropper({
+        path: image.path,
+        hideBottomControls: true,
+        width: 800,
+        height: 800,
+        croppingQuality: 1.0,
+        compressImageQuality: 0.8, // Adjust the image quality
+        compressImageMaxWidth: 800,
+        compressImageMaxHeight: 800,
+        compressImageQuality: Platform.OS == 'android' ? 0.8 : 1
+      });
+
+      if (Platform.OS == 'android') {
+        var filename = croppedImage.path.substring(croppedImage.path.lastIndexOf('/') + 1);
+        setUserImage({
+          uri: croppedImage.path,
+          type: croppedImage.mime,
+          name: filename,
+        });
+      } else if (Platform.OS == 'ios') {
+        setUserImage({
+          uri: croppedImage.sourceURL,
+          type: croppedImage.mime,
+          name: croppedImage.filename,
+        });
+      } else {
+        setUserImage({
+          uri: croppedImage.uri,
+          type: croppedImage.type,
+          name: croppedImage.name,
+        });
+      }
+    });
+  }
+
   return (
     <SafeAreaView style={appStyles.safeAreaView}>
       <View style={[styles?.container]}>
@@ -72,8 +123,15 @@ const Profile = ({ navigation, route }) => {
         >
           {/* Profile Image */}
           <View style={[styles?.imageContainer]}>
-            <Image source={profileImage} style={{ height: '100%', width: '100%', borderRadius: hp(8) }} />
-            <TouchableOpacity style={[styles?.editImageBox]} activeOpacity={.8}>
+            {
+              userImage !== null ?
+                <Image source={{ uri: userImage?.uri }} style={{ height: '100%', width: '100%', borderRadius: hp(8) }} />
+                :
+                <View style={styles?.profileImageContainer}>
+                  <FontAwesome6 name='user-large' size={hp(4)} color={Colors.lightGrey} />
+                </View>
+            }
+            <TouchableOpacity onPress={handleSelectImage} style={[styles?.editImageBox]} activeOpacity={.8}>
               <View style={[styles?.filledBox]}>
                 <AntDesign name='edit' size={hp(2)} color={Colors.white} />
               </View>
@@ -167,6 +225,7 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     justifyContent: 'center', alignItems: 'center'
   },
+  profileImageContainer: { height: '100%', width: '100%', borderRadius: hp(8), backgroundColor: Colors.borderGrey, justifyContent: 'center', alignItems: 'center' },
   userName: {
     color: Colors?.black, fontSize: hp(2), fontFamily: Fonts?.RobotoBold, textAlign: 'center', marginTop: hp(2),
   },
